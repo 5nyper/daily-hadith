@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './styles.css';
 import { getHadith } from '../../services/hadith.service';
+const { ipcRenderer } = window.require('electron');
 
 const App = () => {
   const [dailyHadith, setDailyHadith] = useState({ english: { text: '' }, arabic: {} })
@@ -12,6 +13,17 @@ const App = () => {
   const $cardComet = useRef(null);
 
   useEffect(() => {
+    if (dailyHadith.english.text)
+      ipcRenderer.send('UPDATE_TITLE', `${formatBookTitle(dailyHadith.book)}:${dailyHadith.english.arabicnumber}`);
+  }, [dailyHadith])
+
+  useEffect(() => {
+    ipcRenderer.on('REFRESH', (event, data) =>
+      getHadith().then((res) => {
+        console.log(res)
+        setDailyHadith({ english: res[0], arabic: res[1], book: res[2] })
+      }));
+
     getHadith().then((res) => {
       console.log(res)
       setDailyHadith({ english: res[0], arabic: res[1], book: res[2] })
