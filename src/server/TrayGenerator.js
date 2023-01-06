@@ -18,13 +18,16 @@ class TrayGenerator {
     showWindow = () => {
         const position = this.getWindowPosition();
         this.mainWindow.setPosition(position.x, position.y, false);
+        this.mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
+        this.mainWindow.setVisibleOnAllWorkspaces(false, { visibleOnFullScreen: true, skipTransformProcessType: true });
         this.mainWindow.show();
-        this.mainWindow.setVisibleOnAllWorkspaces(true);
         this.mainWindow.focus();
-        this.mainWindow.setVisibleOnAllWorkspaces(false);
+        //sheesh, what a tutorial /s
     };
 
     toggleWindow = () => {
+        // console.log("POS2", this.mainWindow.getBounds(), this.tray.getBounds())
+
         if (this.mainWindow.isVisible()) {
             this.mainWindow.hide();
         } else {
@@ -42,6 +45,7 @@ class TrayGenerator {
             },
             {
                 label: 'Refresh Hadith',
+                accelerator: 'Command+R',
                 click: event => this.mainWindow.webContents.send('REFRESH', 'hello renderer')
 
             },

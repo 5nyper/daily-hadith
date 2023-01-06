@@ -31,7 +31,7 @@
     "babel-loader": "^8.0.0",
     "css-loader": "^2.0.0",
     "electron": "^11.2.1",
-    "electron-builder": "^21.2.0",
+    "electron-builder": "^23.0.2",
     "eslint": "^5.0.0",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.11.0",
@@ -58,7 +58,7 @@
     ],
     "dmg": {
       "title": "${productName}",
-      "icon": "disk.icns"
+      "icon": "Icon.icns"
     }
   }
 }

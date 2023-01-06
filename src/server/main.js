@@ -14,6 +14,7 @@ let Tray = null;
 const createMainWindow = () => {
   const mainWindow = new BrowserWindow({
     backgroundColor: '#fff',
+    icon: __dirname + `/assets/Icon.icns`,
     width: 800,
     height: 450,
     show: false,
@@ -29,8 +30,14 @@ const createMainWindow = () => {
     }
   });
 
+  mainWindow.webContents.on('new-window', function (e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
+
+
   if (is.development) {
-    // mainWindow.webContents.openDevTools({ mode: 'detach' });
+    //mainWindow.webContents.openDevTools({ mode: 'detach' });
     mainWindow.loadURL('http://localhost:3030');
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../../build/index.html')}`);
@@ -46,6 +53,7 @@ app.on('ready', () => {
   });
   Tray = new TrayGenerator(createMainWindow(), store);
   Tray.createTray();
-  ipcMain.on('UPDATE_TITLE', (event, data) => Tray.setTitle(data));
-
+  ipcMain.on('UPDATE_TITLE', (event, data) => {
+    Tray.setTitle(data)
+  });
 });

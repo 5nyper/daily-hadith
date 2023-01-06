@@ -4,7 +4,7 @@ import { getHadith } from '../../services/hadith.service';
 const { ipcRenderer } = window.require('electron');
 
 const App = () => {
-  const [dailyHadith, setDailyHadith] = useState({ english: { text: '' }, arabic: {} })
+  const [dailyHadith, setDailyHadith] = useState({ english: { text: '' }, arabic: {}, book: '' })
   const $circle = useRef(null);
   const $smallCircle = useRef(null);
   const $card = useRef(null);
@@ -13,8 +13,10 @@ const App = () => {
   const $cardComet = useRef(null);
 
   useEffect(() => {
-    if (dailyHadith.english.text)
+    if (dailyHadith.english.text) {
       ipcRenderer.send('UPDATE_TITLE', `${formatBookTitle(dailyHadith.book)}:${dailyHadith.english.arabicnumber}`);
+      console.log(`https://sunnah.com/${dailyHadith.book}:${dailyHadith.english.arabicnumber}`)
+    }
   }, [dailyHadith])
 
   useEffect(() => {
@@ -110,13 +112,13 @@ const App = () => {
           <div className={styles["card__orangeShine"]} ref={$cardOrangeShine}></div>
 
           <div className={styles["card__hadith"]} ref={$cardHadith}>
-            {dailyHadith.english.text.substring(0, 450)}<a href={`https://sunnah.com/${dailyHadith.book}:${dailyHadith.english.arabicnumber}`} target={"_blank"} hidden={!(dailyHadith.english.text.length > 450)} style={{ color: 'white', textDecorationStyle: 'none' }}> ...Read more</a>
+            {dailyHadith.english.text.substring(0, 450)}<a href={`https://sunnah.com/${dailyHadith.book.split(" | ")[0]}:${dailyHadith.english.arabicnumber}`} target={"_blank"} hidden={!(dailyHadith.english.text.length > 450)} style={{ color: 'white', textDecorationStyle: 'none' }}> ...Read more</a>
           </div>
           <div className={styles["card__hadith-details"]}>
             <span>Hadith of the Day</span>
             <span>{formatBookTitle(dailyHadith.book)}</span>
             <span>#{dailyHadith.english.arabicnumber}</span>
-            {dailyHadith.english.grades && dailyHadith.english.grades.length > 0 ? <span>Grade: <b>{dailyHadith.english.grades[0].grade}</b> by {dailyHadith.english.grades[0].name}</span> : <span>Sahih</span>}
+            {dailyHadith.english.grades && dailyHadith.english.grades.length > 0 ? <span><b>{dailyHadith.english.grades[0].grade}</b> by {dailyHadith.english.grades[0].name}</span> : <span>Sahih</span>}
           </div>
         </div>
       </div>
