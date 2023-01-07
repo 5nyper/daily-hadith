@@ -45,7 +45,6 @@ class TrayGenerator {
             },
             {
                 label: 'Refresh Hadith',
-                accelerator: 'Command+R',
                 click: event => this.mainWindow.webContents.send('REFRESH', 'hello renderer')
 
             },

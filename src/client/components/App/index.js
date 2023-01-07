@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './styles.css';
 import { getHadith } from '../../services/hadith.service';
-const { ipcRenderer } = window.require('electron');
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons'
+//const { ipcRenderer } = window.require('electron');
 
 const App = () => {
   const [dailyHadith, setDailyHadith] = useState({ english: { text: '' }, arabic: {}, book: '' })
@@ -14,22 +16,21 @@ const App = () => {
 
   useEffect(() => {
     if (dailyHadith.english.text) {
-      ipcRenderer.send('UPDATE_TITLE', `${formatBookTitle(dailyHadith.book)}:${dailyHadith.english.arabicnumber}`);
+      // ipcRenderer.send('UPDATE_TITLE', `${formatBookTitle(dailyHadith.book)}:${dailyHadith.english.arabicnumber}`);
       console.log(`https://sunnah.com/${dailyHadith.book}:${dailyHadith.english.arabicnumber}`)
     }
   }, [dailyHadith])
 
-  useEffect(() => {
-    ipcRenderer.on('REFRESH', (event, data) =>
-      getHadith().then((res) => {
-        console.log(res)
-        setDailyHadith({ english: res[0], arabic: res[1], book: res[2] })
-      }));
+  async function getData() {
+    let res = await getHadith()
+    console.log(res)
+    setDailyHadith({ english: res[0], arabic: res[1], book: res[2] })
 
-    getHadith().then((res) => {
-      console.log(res)
-      setDailyHadith({ english: res[0], arabic: res[1], book: res[2] })
-    })
+  }
+
+  useEffect(() => {
+    //ipcRenderer.on('REFRESH', (event, data) => getData());
+    getData();
     const circle = $circle.current
     const smallCircle = $smallCircle.current
     const card = $card.current
@@ -81,17 +82,17 @@ const App = () => {
     let parts = book.split(" | ")
     switch (parts[0]) {
       case 'bukhari':
-        return "Sahih al-Bukhari" + " | " + parts[1]
+        return "Sahih al-Bukhari" + " | " + (parts[1].length > 35 ? parts[1].substring(0, 35) + '...' : parts[1])
       case 'muslim':
-        return "Sahih Muslim" + " | " + parts[1]
+        return "Sahih Muslim" + " | " + (parts[1].length > 35 ? parts[1].substring(0, 35) + '...' : parts[1])
       case 'abudawud':
-        return "Sunan Abu Dawud" + " | " + parts[1]
+        return "Sunan Abu Dawud" + " | " + (parts[1].length > 35 ? parts[1].substring(0, 35) + '...' : parts[1])
       case 'tirmidhi':
-        return "Jami' Tirmidhi" + " | " + parts[1]
+        return "Jami' Tirmidhi" + " | " + (parts[1].length > 35 ? parts[1].substring(0, 35) + '...' : parts[1])
       case 'nasai':
-        return "Sunan An-Nasa'i" + " | " + parts[1]
+        return "Sunan An-Nasa'i" + " | " + (parts[1].length > 35 ? parts[1].substring(0, 35) + '...' : parts[1])
       case 'ibnmajah':
-        return "Sunan Ibn Majah" + " | " + parts[1]
+        return "Sunan Ibn Majah" + " | " + (parts[1].length > 35 ? parts[1].substring(0, 35) + '...' : parts[1])
       default:
         return "loading..."
     }
@@ -115,7 +116,7 @@ const App = () => {
             {dailyHadith.english.text.substring(0, 450)}<a href={`https://sunnah.com/${dailyHadith.book.split(" | ")[0]}:${dailyHadith.english.arabicnumber}`} target={"_blank"} hidden={!(dailyHadith.english.text.length > 450)} style={{ color: 'white', textDecorationStyle: 'none' }}> ...Read more</a>
           </div>
           <div className={styles["card__hadith-details"]}>
-            <span>Hadith of the Day</span>
+            <span>Daily Hadith |   <FontAwesomeIcon icon={faRefresh} onClick={getData} /></span>
             <span>{formatBookTitle(dailyHadith.book)}</span>
             <span>#{dailyHadith.english.arabicnumber}</span>
             {dailyHadith.english.grades && dailyHadith.english.grades.length > 0 ? <span><b>{dailyHadith.english.grades[0].grade}</b> by {dailyHadith.english.grades[0].name}</span> : <span>Sahih</span>}

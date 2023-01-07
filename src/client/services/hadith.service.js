@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export async function getHadith() {
-    const books = ["abudawud", "bukhari", "ibnmajah", "muslim", "mailk", "tirmidhi", "nasai"]
+    const books = ["abudawud", "bukhari", "ibnmajah", "muslim", "mailik", "tirmidhi", "nasai"]
     const axiosObj = axios.create()
 
     const selectedBook = books[Math.floor((Math.random() * books.length))]

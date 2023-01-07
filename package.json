@@ -11,6 +11,9 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@svgr/webpack": "^4.3.3",
     "axios": "^1.2.2",
     "babel-plugin-dynamic-import-node": "^2.3.3",
