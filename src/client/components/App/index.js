@@ -3,7 +3,7 @@ import styles from './styles.css';
 import { getHadith } from '../../services/hadith.service';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
-//const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = window.require('electron');
 
 const App = () => {
   const [dailyHadith, setDailyHadith] = useState({ english: { text: '' }, arabic: {}, book: '' })
@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(() => {
     if (dailyHadith.english.text) {
-      // ipcRenderer.send('UPDATE_TITLE', `${formatBookTitle(dailyHadith.book)}:${dailyHadith.english.arabicnumber}`);
+      ipcRenderer.send('UPDATE_TITLE', `${formatBookTitle(dailyHadith.book)}:${dailyHadith.english.arabicnumber}`);
       console.log(`https://sunnah.com/${dailyHadith.book}:${dailyHadith.english.arabicnumber}`)
     }
   }, [dailyHadith])
@@ -29,7 +29,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    //ipcRenderer.on('REFRESH', (event, data) => getData());
+    ipcRenderer.on('REFRESH', (event, data) => getData());
     getData();
     const circle = $circle.current
     const smallCircle = $smallCircle.current
