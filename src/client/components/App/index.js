@@ -3,10 +3,15 @@ import styles from './styles.css';
 import { getHadith } from '../../services/hadith.service';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { faChevronCircleLeft, faChevronCircleRight, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import Switch from 'react-ios-switch';
+
 const { ipcRenderer } = window.require('electron');
 
 const App = () => {
   const [dailyHadith, setDailyHadith] = useState({ english: { text: '' }, arabic: {}, book: '' })
+  const [isArabic, setIsArabic] = useState(false);
+  const [gradeIndex, setGradeIndex] = useState(0);
   const $circle = useRef(null);
   const $smallCircle = useRef(null);
   const $card = useRef(null);
@@ -25,7 +30,7 @@ const App = () => {
     let res = await getHadith()
     console.log(res)
     setDailyHadith({ english: res[0], arabic: res[1], book: res[2] })
-
+    setGradeIndex(0)
   }
 
   useEffect(() => {
@@ -113,16 +118,32 @@ const App = () => {
           <div className={styles["card__orangeShine"]} ref={$cardOrangeShine}></div>
 
           <div className={styles["card__hadith"]} ref={$cardHadith}>
-            {dailyHadith.english.text.substring(0, 450)}<a href={`https://sunnah.com/${dailyHadith.book.split(" | ")[0]}:${dailyHadith.english.arabicnumber}`} target={"_blank"} hidden={!(dailyHadith.english.text.length > 450)} style={{ color: 'white', textDecorationStyle: 'none' }}> ...Read more</a>
+            {isArabic ? dailyHadith.arabic.text.substring(0, 450) : dailyHadith.english.text.substring(0, 450)}<a href={`https://sunnah.com/${dailyHadith.book.split(" | ")[0]}:${dailyHadith.english.arabicnumber}`} target={"_blank"} hidden={!(dailyHadith.english.text.length > 450)} style={{ color: 'white', textDecorationStyle: 'none' }}> ...Read more</a>
           </div>
           <div className={styles["card__hadith-details"]}>
             <span>Daily Hadith |   <FontAwesomeIcon icon={faRefresh} onClick={getData} /></span>
             <span>{formatBookTitle(dailyHadith.book)}</span>
-            <span>#{dailyHadith.english.arabicnumber}</span>
-            {dailyHadith.english.grades && dailyHadith.english.grades.length > 0 ? <span><b>{dailyHadith.english.grades[0].grade}</b> by {dailyHadith.english.grades[0].name}</span> : <span>Sahih</span>}
+            <span><a href={`https://sunnah.com/${dailyHadith.book.split(" | ")[0]}:${dailyHadith.english.arabicnumber}`} target={"_blank"} style={{ color: 'white', textDecorationStyle: 'none' }}>#{dailyHadith.english.arabicnumber}</a></span>
+            {dailyHadith.english.grades && dailyHadith.english.grades.length > 0 ?
+              <span>
+                <FontAwesomeIcon icon={faChevronLeft} color={gradeIndex == 0 ? 'gray' : 'white'} onClick={() => { gradeIndex - 1 >= 0 ? setGradeIndex(gradeIndex - 1) : null; }} />
+                <b>{dailyHadith.english.grades[gradeIndex].grade} </b>
+                by {dailyHadith.english.grades[gradeIndex].name}
+                <FontAwesomeIcon icon={faChevronRight} color={gradeIndex == dailyHadith.english.grades.length - 1 ? 'gray' : 'white'} onClick={() => { gradeIndex + 1 < dailyHadith.english.grades.length ? setGradeIndex(gradeIndex + 1) : null; }} />
+              </span> :
+              <span><b>Sahih</b></span>}
           </div>
         </div>
+        <span className={styles["arabic-toggle"]}>
+          <label style={{ marginBottom: '20px', verticalAlign: 'super' }}>   عَرَبِيّ      </label>
+
+          <Switch
+            checked={isArabic}
+            onChange={() => setIsArabic(!isArabic)}
+          />
+        </span>
       </div>
+
     </>)
 }
 

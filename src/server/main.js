@@ -37,7 +37,7 @@ const createMainWindow = () => {
 
 
   if (is.development) {
-    //mainWindow.webContents.openDevTools({ mode: 'detach' });
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
     mainWindow.loadURL('http://localhost:3030');
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../../build/index.html')}`);

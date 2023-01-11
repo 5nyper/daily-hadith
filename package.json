@@ -23,7 +23,8 @@
     "electron-util": "^0.12.2",
     "prop-types": "^15.7.2",
     "react": "^16.5.2",
-    "react-dom": "^16.5.2"
+    "react-dom": "^16.5.2",
+    "react-ios-switch": "^0.1.19"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

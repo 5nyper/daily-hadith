@@ -19,9 +19,9 @@ class TrayGenerator {
         const position = this.getWindowPosition();
         this.mainWindow.setPosition(position.x, position.y, false);
         this.mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
-        this.mainWindow.setVisibleOnAllWorkspaces(false, { visibleOnFullScreen: true, skipTransformProcessType: true });
         this.mainWindow.show();
-        this.mainWindow.focus();
+        this.mainWindow.setVisibleOnAllWorkspaces(false, { visibleOnFullScreen: true, skipTransformProcessType: true });
+
         //sheesh, what a tutorial /s
     };
 
